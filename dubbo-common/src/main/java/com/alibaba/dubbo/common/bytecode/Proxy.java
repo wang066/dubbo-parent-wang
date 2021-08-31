@@ -33,6 +33,55 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+/*
+demo
+package org.apache.dubbo.common.bytecode;
+
+public interface Car {
+    String getBrand();
+    long getWeight();
+    void make(String brand, long weight);
+}
+Dubbo首先生成Car的一个实现类proxy0，每个方法都代理给InvocationHandler处理：
+public class proxy0 implements org.apache.dubbo.common.bytecode.Car {
+    // 接口定义的方法
+    public static java.lang.reflect.Method[] methods;
+
+    private java.lang.reflect.InvocationHandler handler;
+
+    public proxy0() {
+    }
+
+    public proxy0(java.lang.reflect.InvocationHandler h) {
+        handler=$1;
+    }
+
+    public void make(String brand, long weight) {
+        Object[] args = new Object[2];
+        args[0] = ($w) $1;
+        args[1] = ($w) $2;
+        Object ret = handler.invoke(this, methods[0], args);
+    }
+
+    public String getBrand() {
+        Object[] args = new Object[0];
+        Object ret = handler.invoke(this, methods[1], args);
+        return (java.lang.String) ret;
+    }
+
+    public long getWeight() {
+        Object[] args = new Object[0];
+        Object ret = handler.invoke(this, methods[2], args);
+        return ret == null ? (long) 0 : ((Long) ret).longValue();
+    }
+}
+然后生成一个Proxy的子类Proxy0，可以用于创建代理类的实例：
+public class Proxy0 extends org.apache.dubbo.common.bytecode.Proxy {
+    public Object newInstance(java.lang.reflect.InvocationHandler h) {
+        return new proxy0($1);
+    }
+}
+ */
 /**
  * Proxy.
  */

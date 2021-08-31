@@ -16,25 +16,31 @@
  */
 package com.alibaba.dubbo.common;
 
+import com.alibaba.dubbo.common.utils.CollectionUtils;
+import com.alibaba.dubbo.common.utils.NetUtils;
+import com.alibaba.dubbo.common.utils.StringUtils;
+
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+/**
+ dubbo://192.168.1.6:20880/moe.cnkirito.sample.HelloService?timeout=3000
+ 描述一个 dubbo 协议的服务
 
-import com.alibaba.dubbo.common.utils.CollectionUtils;
-import com.alibaba.dubbo.common.utils.NetUtils;
-import com.alibaba.dubbo.common.utils.StringUtils;
+ zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=demo-consumer&dubbo=2.0.2&interface=org.apache.dubbo.registry.RegistryService&pid=1214&qos.port=33333&timestamp=1545721981946
+ 描述一个 zookeeper 注册中心
+
+ consumer://30.5.120.217/org.apache.dubbo.demo.DemoService?application=demo-consumer&category=consumers&check=false&dubbo=2.0.2&interface=org.apache.dubbo.demo.DemoService&methods=sayHello&pid=1209&qos.port=33333&side=consumer&timestamp=1545721827784
+ 描述一个消费者
+
+ 描述服务调用
+ dubbo://192.168.175.1:20880/org.apache.dubbo.demo.DemoService?anyhost=true&application=dubbo-demo-annotation-provider&deprecated=false&dubbo=2.0.2&dynamic=true&generic=false&interface=org.apache.dubbo.demo.DemoService&methods=sayHello,sayHelloAsync&pid=15012&release=&side=provider&timestamp=1610857629484
+ */
 
 /**
  * URL - Uniform Resource Locator (Immutable, ThreadSafe)

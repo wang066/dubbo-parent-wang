@@ -38,8 +38,10 @@ import java.util.concurrent.ConcurrentHashMap;
  consumer://30.5.120.217/org.apache.dubbo.demo.DemoService?application=demo-consumer&category=consumers&check=false&dubbo=2.0.2&interface=org.apache.dubbo.demo.DemoService&methods=sayHello&pid=1209&qos.port=33333&side=consumer&timestamp=1545721827784
  描述一个消费者
 
- 描述服务调用
  dubbo://192.168.175.1:20880/org.apache.dubbo.demo.DemoService?anyhost=true&application=dubbo-demo-annotation-provider&deprecated=false&dubbo=2.0.2&dynamic=true&generic=false&interface=org.apache.dubbo.demo.DemoService&methods=sayHello,sayHelloAsync&pid=15012&release=&side=provider&timestamp=1610857629484
+
+ Dubbo的Consumer会向Zookeeper传入如下参数进行服务的订阅操作。
+ consumer://192.168.175.1/org.apache.dubbo.demo.DemoService?application=dubbo-demo-annotation-consumer&category=providers,configurators,routers&dubbo=2.0.2&init=false&interface=org.apache.dubbo.demo.DemoService&methods=sayHello,sayHelloAsync&pid=15184&side=consumer&sticky=false&timestamp=1610860963037
  */
 
 /**

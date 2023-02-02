@@ -16,14 +16,19 @@
  */
 package com.alibaba.dubbo.remoting;
 
-import java.net.InetSocketAddress;
-
 import com.alibaba.dubbo.common.URL;
+
+import java.net.InetSocketAddress;
 
 /**
  * Endpoint. (API/SPI, Prototype, ThreadSafe)
  *
  * Endpoint 断点 接口
+ * 端 就是 一个点，点对点之间是可以双向传输
+ * 在端的基础上 再衍生出 通道-Channel、客户端-Client以及服务端-Server的概念
+ *
+ * 在传输层-Transport，Client和Server只是在语义上区别，并不区分 请求 和 应答 职责
+ * 在交换层-Exchange，Client和Server也是一个点，但是已经是 有方向的点，区分了明确的请求和应答职责。两者都具备 发送的能力，只是Client和Server所关注的事情不一样
  *
  * @see com.alibaba.dubbo.remoting.Channel
  * @see com.alibaba.dubbo.remoting.Client

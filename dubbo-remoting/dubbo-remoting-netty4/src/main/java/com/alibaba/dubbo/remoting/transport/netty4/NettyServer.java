@@ -95,8 +95,8 @@ public class NettyServer extends AbstractServer implements Server {
                 // 设置 Channel类型
                 .channel(NioServerSocketChannel.class) // Server
                 // 设置可选项
-                .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
-                .childOption(ChannelOption.SO_REUSEADDR, Boolean.TRUE)
+                .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)//启动TCP_NODELAY，就意味着禁用了Nagle算法，允许小包的发送。
+                .childOption(ChannelOption.SO_REUSEADDR, Boolean.TRUE)//一个端口释放后会等待两分钟之后才能再被使用，SO_REUSEADDR是让端口释放后立即就可以被再次使用。
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 // 设置责任链路
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {

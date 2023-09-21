@@ -43,7 +43,12 @@ import java.io.InputStream;
 
 /**
  * Dubbo codec.
- *
+ * dubbo的消息头是一个定长的 16个字节。
+ * 第1-2个字节：是一个魔数数字：就是一个固定的数字
+ * 第3个字节：序列号组件类型，它用于和客户端约定的序列号编码号
+ * 第四个字节：它是response的结果响应码 例如 OK=20
+ * 第5-12个字节：请求id：long型8个字节。异步变同步的全局唯一ID，用来做consumer和provider的来回通信标记。
+ * 第13-16个字节：消息体的长度，也就是消息头+请求数据的长度。
  * Dubbo 编解码器
  */
 public class DubboCodec extends ExchangeCodec implements Codec2 {

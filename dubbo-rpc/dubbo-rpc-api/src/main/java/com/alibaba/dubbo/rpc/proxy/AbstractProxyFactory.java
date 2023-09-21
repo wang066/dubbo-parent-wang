@@ -30,6 +30,7 @@ import com.alibaba.dubbo.rpc.service.EchoService;
  */
 public abstract class AbstractProxyFactory implements ProxyFactory {
 
+    @Override
     public <T> T getProxy(Invoker<T> invoker) throws RpcException {
         Class<?>[] interfaces = null;
         // TODO 8022 芋艿

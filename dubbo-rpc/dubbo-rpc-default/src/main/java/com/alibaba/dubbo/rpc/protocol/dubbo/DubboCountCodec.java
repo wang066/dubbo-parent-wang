@@ -46,7 +46,7 @@ public final class DubboCountCodec implements Codec2 {
 
     @Override
     public Object decode(Channel channel, ChannelBuffer buffer) throws IOException {
-        // 记录当前读位置
+        // 记录当前读位置 保存buffer的读索引
         int save = buffer.readerIndex();
         // 创建 MultiMessage 对象
         MultiMessage result = MultiMessage.create();
@@ -55,7 +55,7 @@ public final class DubboCountCodec implements Codec2 {
             Object obj = codec.decode(channel, buffer);
             // 输入不够，重置读进度
             if (Codec2.DecodeResult.NEED_MORE_INPUT == obj) {
-                buffer.readerIndex(save);
+                buffer.readerIndex(save);//将buffer读索引回滚
                 break;
             // 解析到消息
             } else {

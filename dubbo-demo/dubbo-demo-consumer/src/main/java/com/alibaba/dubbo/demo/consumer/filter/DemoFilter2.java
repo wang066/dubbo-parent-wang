@@ -8,6 +8,7 @@ public class DemoFilter2 implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         Result result = invoker.invoke(invocation);
         result.getAttachments().put("hh", "hhhh");
+        System.out.println("哈哈哈");
         return result;
     }
 

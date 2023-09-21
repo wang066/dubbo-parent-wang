@@ -31,11 +31,20 @@ import com.alibaba.dubbo.rpc.proxy.InvokerInvocationHandler;
  */
 public class JavassistProxyFactory extends AbstractProxyFactory {
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
         return (T) Proxy.getProxy(interfaces).newInstance(new InvokerInvocationHandler(invoker));
     }
 
+    /**
+     * con
+     * @param proxy Service 对象
+     * @param type Service 类型
+     * @param url 服务的 Dubbo URL
+     * @param <T>
+     * @return
+     */
     public <T> Invoker<T> getInvoker(T proxy, Class<T> type, URL url) {
         // TODO Wrapper cannot handle this scenario correctly: the classname contains '$'
         // TODO Wrapper类不能正确处理带$的类名

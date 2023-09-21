@@ -51,6 +51,7 @@ public class AdaptiveCompiler implements Compiler {
             compiler = loader.getDefaultExtension();
         }
         // 编译类
+        System.out.println(code);
         return compiler.compile(code, classLoader);
     }
 

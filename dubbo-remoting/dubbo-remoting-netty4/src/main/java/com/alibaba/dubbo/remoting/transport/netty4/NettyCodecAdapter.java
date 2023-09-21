@@ -16,9 +16,6 @@
  */
 package com.alibaba.dubbo.remoting.transport.netty4;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.remoting.Codec2;
 import com.alibaba.dubbo.remoting.buffer.ChannelBuffer;
@@ -28,6 +25,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * NettyCodecAdapter.
@@ -92,6 +92,7 @@ final class NettyCodecAdapter {
 
     }
 
+    //dubbo在处理tcp的粘包和拆包时是借助InternalDecoder的buffer缓存对象来缓存不完整的dubbo协议栈数据，等待下次inbound事件，合并进去。所以说在dubbo中解决TCP拆包和粘包的时候是通过buffer变量来解决的
     private class InternalDecoder extends ByteToMessageDecoder {
 
         /**

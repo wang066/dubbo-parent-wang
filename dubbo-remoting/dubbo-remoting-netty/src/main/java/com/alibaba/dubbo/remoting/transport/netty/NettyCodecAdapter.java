@@ -16,8 +16,6 @@
  */
 package com.alibaba.dubbo.remoting.transport.netty;
 
-import java.io.IOException;
-
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.remoting.Codec2;
@@ -33,6 +31,8 @@ import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
 import org.jboss.netty.handler.codec.oneone.OneToOneEncoder;
+
+import java.io.IOException;
 
 /**
  * NettyCodecAdapter.
@@ -104,6 +104,12 @@ final class NettyCodecAdapter {
 
     }
 
+//解决消息粘包拆包
+//1.消息的定长，例如定1000个字节
+//
+//2.就是在包尾增加回车或空格等特殊字符作为切割。典型的FTP协议
+//
+//3.将消息分为消息头消息体，消息头中包含表示消息总长度（或者消息体长度）的字段，通常涉及思路为消息头的第一个字段使用int32来表示消息的总长度。例如 dubbo
     private class InternalDecoder extends SimpleChannelUpstreamHandler {
 
         /**
@@ -175,6 +181,7 @@ final class NettyCodecAdapter {
                     }
                 } while (message.readable());
             } finally {
+                // 如果消息没有全部使用完，也就是存在粘包的状况下，保存此次消息状态
                 // 有剩余可读的，压缩并缓存
                 if (message.readable()) {
                     message.discardReadBytes();

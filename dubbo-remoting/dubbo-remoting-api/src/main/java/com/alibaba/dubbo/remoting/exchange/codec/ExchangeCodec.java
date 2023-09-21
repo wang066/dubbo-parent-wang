@@ -16,9 +16,6 @@
  */
 package com.alibaba.dubbo.remoting.exchange.codec;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.alibaba.dubbo.common.io.Bytes;
 import com.alibaba.dubbo.common.io.StreamUtils;
 import com.alibaba.dubbo.common.logger.Logger;
@@ -40,7 +37,16 @@ import com.alibaba.dubbo.remoting.telnet.codec.TelnetCodec;
 import com.alibaba.dubbo.remoting.transport.CodecSupport;
 import com.alibaba.dubbo.remoting.transport.ExceedPayloadLimitException;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
+ *
+ * 上面的方法就解决了粘包了拆包的问题了
+ *
+ * 若出现粘包，就会根据它的请求长度进行截取；
+ *
+ * 若出现拆包，数据会不完整，就进入循环重新读取，直到取到完整数据。
  * ExchangeCodec.
  * <p>
  * 信息交换编解码器
@@ -86,6 +92,10 @@ public class ExchangeCodec extends TelnetCodec {
         return decode(channel, buffer, readable, header);
     }
 
+    //为什么比http效率要高一点
+    //
+    //请求头较小，没有额外信息。
+    //http的编解码工作由http服务器做一层编解码，再由我们的应用服务器做一次编解码（如json）才到我们的jvm之中。而dubbo这种一般不需要二次编码，直接编码二进制，然后传输
     @Override
     protected Object decode(Channel channel, ChannelBuffer buffer, int readable, byte[] header) throws IOException {
         // 非 Dubbo 协议，目前是 Telnet 命令。
@@ -109,6 +119,9 @@ public class ExchangeCodec extends TelnetCodec {
             // 提交给父类( Telnet ) 处理，目前是 Telnet 命令。
             return super.decode(channel, buffer, readable, header);
         }
+
+        // check length.
+        //1：当前buffer的可读长度还没有消息头长，说明当前buffer连协议栈的头都不完整
         // Header 长度不够，返回需要更多的输入
         // check length.
         if (readable < HEADER_LENGTH) {
@@ -119,7 +132,7 @@ public class ExchangeCodec extends TelnetCodec {
         // get data length.
         int len = Bytes.bytes2int(header, 12);
         checkPayload(channel, len);
-
+        //2：当前buffer包含了完整的消息头，便可以得到payload的长度，发现它的可读的长度，并没有包含整个协议栈的数据
         // 总长度不够，返回需要更多的输入
         int tt = len + HEADER_LENGTH;
         if (readable < tt) {
@@ -128,6 +141,7 @@ public class ExchangeCodec extends TelnetCodec {
 
         // 解析 Header + Body
         // limit input stream.
+        // 3：如果上面两个情况都不符合，那么说明当前的buffer至少包含一个dubbo协议栈的数据，那么从当前buffer中读取一个dubbo协议栈的数据，解析出一个dubbo数据，当然这里可能读取完一个dubbo数据之后还会有剩余的数据。读取一个dubbo协议栈的数据
         ChannelBufferInputStream is = new ChannelBufferInputStream(buffer, len);
         try {
             return decodeBody(channel, is, header);

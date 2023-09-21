@@ -77,6 +77,14 @@ public class Protocol$Adaptive implements com.alibaba.dubbo.rpc.Protocol {
  *
  * 如上逻辑，处理的入口方法为 {@link ExtensionLoader#getAdaptiveExtensionClass()}
  *
+ * value 是个字符数组，通过该属性从 URL 中获取扩展名，来决定使用哪个扩展。分为几种情况：
+ *
+ * 1.设置了 value，且从 URL 中找到了对应的扩展名，则使用该扩展；
+ *
+ * 2.设置了 value，但从 URL 中找不到扩展名，则使用默认的扩展，即 @SPI 中配置的 value，还是找不到则抛出异常；
+ *
+ * 3.未设置 value，则根据接口名生成 value，比如接口 YyyInvokerWrapper 生成 value = “yyy.invoker.wrapper”。
+ *
  * @see ExtensionLoader
  * @see URL
  */

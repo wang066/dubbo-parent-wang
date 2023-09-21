@@ -134,10 +134,14 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
     @Override
     @SuppressWarnings({"unchecked", "deprecation"})
     public void afterPropertiesSet() throws Exception {
+        ////当某个<dubbo:service/>没有绑定相应的<dubbo:provider/>的时候，就会触发下面的逻辑
         if (getProvider() == null) {
+            //在spring的IOC容器中查找所有的type为ProviderConfig.class或其子类的bean,可能会有多个provider的配置
             Map<String, ProviderConfig> providerConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProviderConfig.class, false, false);
             if (providerConfigMap != null && providerConfigMap.size() > 0) {
+                //在spring的IOC容器中查找type为ProtocolConfig.class或其子类的bean
                 Map<String, ProtocolConfig> protocolConfigMap = applicationContext == null ? null : BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, ProtocolConfig.class, false, false);
+                //存在<dubbo:provider/>但不存在<dubbo:protocol/>配置的情况,也就是说旧版本的protocol配置需要从provider中提取
                 if ((protocolConfigMap == null || protocolConfigMap.size() == 0)
                         && providerConfigMap.size() > 1) { // backward compatibility
                     List<ProviderConfig> providerConfigs = new ArrayList<ProviderConfig>();
@@ -146,10 +150,11 @@ public class ServiceBean<T> extends ServiceConfig<T> implements InitializingBean
                             providerConfigs.add(config);
                         }
                     }
+                    //在配置provider的同时，也从默认的<dubbo:provider/>中提取protocol的配置
                     if (!providerConfigs.isEmpty()) {
                         setProviders(providerConfigs);
                     }
-                } else {
+                } else {//已存在<dubbo:protocol/>配置,则找出默认的<dubbo:provider/>配置
                     ProviderConfig providerConfig = null;
                     for (ProviderConfig config : providerConfigMap.values()) {
                         if (config.isDefault() == null || config.isDefault().booleanValue()) {
